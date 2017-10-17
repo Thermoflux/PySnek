@@ -1,0 +1,234 @@
+#!/usr/bin/env python2
+
+"""
+Simple Snake game to understand python and pygame better.
+
+Inspired and got help form a example snake game tutorial from below
+ --- Simple snake gmae.
+ --- Sample Python/Pygame Programs
+ --- Simpson College Computer Science
+ --- http://programarcadegames.com/
+ --- http://simpson.edu/computer-science/
+
+Created by Thermoflux
+
+"""
+
+__author__ = "Thermoflux"
+__license__ = "GPL"
+
+import pygame,  random , Message
+
+# Colors
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
+# Game Window 
+WIN_WIDTH = 800
+WIN_HEIGHT = 600
+
+# Snake properties
+snk_unitheight = 15
+snk_unitwidth = 15
+snk_unitmargin = 3
+
+# Class Segment
+class Segment(pygame.sprite.Sprite):
+    """ Class to represent one segment of the snake. """
+    # -- Methods
+    # Constructor function
+    def __init__(self, x, y, color):
+        # Call the parent's constructor
+        pygame.sprite.Sprite.__init__(self)
+ 
+        # Set height, width
+        self.image = pygame.Surface([snk_unitwidth, snk_unitheight])
+        self.image.fill(color)
+ 
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+# Class Game
+class Game(object):
+    """ Class to represent a game. """
+    # -- Methods
+    # Constructor
+    def __init__(self):
+        
+        self.gameover = False
+        self.quit = False
+        self.score = 0
+        self.allspritelist = pygame.sprite.Group()
+        self.snkelements = []
+        self.snakesprite = pygame.sprite.Group()
+        self.foodsegment = Segment(0 , 0 , GREEN)
+        self.foodsprite = pygame.sprite.Group()
+        self.screen = pygame.display.set_mode([WIN_WIDTH, WIN_HEIGHT])
+        # Initial speed 
+        self.snk_xchange = snk_unitwidth + snk_unitmargin
+        self.snk_ychange = 0
+        self.newfood = False
+        
+        # Create snake
+        for i in range(13):
+            x = 250 - (snk_unitwidth + snk_unitmargin) * i
+            y = 30
+            segment = Segment(x, y, WHITE)
+            self.snkelements.append(segment)
+            self.snakesprite.add(segment)
+            self.allspritelist.add(segment)
+            
+        # make food sprite
+        new_x = random.randrange(0, WIN_WIDTH, snk_unitwidth + snk_unitmargin) 
+        new_y = random.randrange(0, WIN_HEIGHT, snk_unitheight+ snk_unitmargin) 
+        self.foodsegment  = Segment(new_x , new_y , GREEN)
+        self.foodsprite.add(self.foodsegment)
+        self.allspritelist.add(self.foodsegment)
+    
+    # Quit game 
+    def quitgame(self):
+        if self.gameover == True :
+            # Quit game code
+            return True
+        elif self.quit == True  :
+            return True
+        else :
+            return False
+    
+    # Process all game inputs
+    def process_events(self):
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: 
+                if event.type == pygame.QUIT:
+                    self.quit  = True
+    
+            # Set the speed based on the key pressed
+            # We want the speed to be enough that we move a full
+            # segment, plus the margin.
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    self.snk_xchange = (snk_unitwidth + snk_unitmargin) * -1
+                    self.snk_ychange = 0
+                if event.key == pygame.K_RIGHT:
+                    self.snk_xchange = (snk_unitwidth + snk_unitmargin)
+                    self.snk_ychange = 0
+                if event.key == pygame.K_UP:
+                    self.snk_xchange = 0
+                    self.snk_ychange = (snk_unitheight + snk_unitmargin) * -1
+                if event.key == pygame.K_DOWN:
+                    self.snk_xchange = 0
+                    self.snk_ychange = (snk_unitheight + snk_unitmargin)
+                if event.key == pygame.K_q:
+                    self.quit  = True
+                self.newfood = False
+                
+        if self.quit == True : 
+            self.gameover = True
+            
+        return self.quitgame()
+    
+    # Run game logic 
+    def runLogic(self):
+        
+        # See if the player block has collided with anything.
+        self.newfood = pygame.sprite.collide_rect(self.snkelements[0], self.foodsegment)
+        #print blocks_hit_list    
+        
+        # Place new food and increase snk lenght
+        if self.newfood:
+            # Update score
+            self.score = self.score + 1
+            # Put new food
+            self.foodsprite.remove(self.foodsegment)
+            self.allspritelist.remove(self.foodsegment)
+            new_x = random.randrange(0, WIN_WIDTH, snk_unitwidth + snk_unitmargin) 
+            new_y = random.randrange(0, WIN_HEIGHT, snk_unitheight+ snk_unitmargin) 
+            self.foodsegment  = Segment(new_x , new_y ,  GREEN)
+            self.foodsprite.add(self.foodsegment)
+            self.allspritelist.add(self.foodsegment)  
+            # Add 1 blk to snk
+            if self.snk_xchange != 0:
+                x = self.snkelements[len(self.snkelements)-1].rect.x + self.snk_xchange
+                y = 0
+            if self.snk_ychange != 0:
+                x = 0    
+                y = self.snkelements[len(self.snkelements)-1].rect.y + self.snk_ychange
+            segment = Segment(x, y, WHITE)
+            self.snkelements.append(segment)
+            self.snakesprite.add(segment)
+            self.allspritelist.add(segment)
+            
+        
+        # remove old snake segments
+        self.allspritelist.remove(self.snkelements.pop())
+        x = self.snkelements[0].rect.x + self.snk_xchange
+        y = self.snkelements[0].rect.y + self.snk_ychange
+        segment = Segment(x, y, WHITE)
+        self.snkelements.insert(0, segment)
+        self.snakesprite.add(segment)
+        self.allspritelist.add(segment)
+                
+    # Refresh display
+    def display_frame(self):
+        """ Display everything to the screen for the game. """
+        self.screen.fill(BLACK)
+ 
+        if self.gameover: 
+            # font = pygame.font.Font("Serif", 25)
+            font = pygame.font.SysFont("serif", 25)
+            text = font.render("Game Over, click to restart", True, BLACK)
+            center_x = (WIN_WIDTH // 2) - (text.get_width() // 2)
+            center_y = (WIN_HEIGHT// 2) - (text.get_height() // 2)
+            self.screen.blit(text, [center_x, center_y])
+ 
+        if not self.gameover:
+            msg = "Score   :" + str(self.score)
+            Message.Message(msg, 650, 80, self.screen, WHITE)
+            msg = "Segments:" + str(len(self.snkelements))
+            Message.Message(msg, 650, 100, self.screen, WHITE)
+            self.allspritelist.draw(self.screen)
+ 
+        pygame.display.flip()
+ 
+        
+def main():
+    
+    pygame.init()
+    
+    # Set the title of the window
+    pygame.display.set_caption('Simple Snake')
+    
+    # Hide mouse
+    pygame.mouse.set_visible(False)
+
+    clock = pygame.time.Clock()
+ 
+    # Create an instance of the Game class
+    game = Game()
+    done = False
+    # Main game loop
+    while not done:
+ 
+        # Process events (keystrokes, mouse clicks, etc)
+        done = game.process_events()
+ 
+        # Update object positions, check for collisions
+        game.runLogic()
+        
+        # Draw the current frame
+        game.display_frame()
+        
+        clock.tick(5)
+    # Close window and exit
+    pygame.quit()
+ 
+# Call the main function, start up the game
+if __name__ == "__main__":
+    main()
+ 
