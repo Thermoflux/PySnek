@@ -12,7 +12,6 @@ You can clone this git repo or download it using HTTPS.
 2. HTTPS download
 	* https://github.com/Thermoflux/PySnek/archive/master.zip
 	
-<<<<<<< HEAD
 You need to have **[pygame](https://www.pygame.org/wiki/about "Pygame Wiki")** and **[Python2](https://www.python.org/downloads/release/python-2714/ "Python 2.7.14")** installed to run this game.
 	
 ## Usage
@@ -26,18 +25,3 @@ To run the game.
 
 Simple commands using arrowkeys to move around and 'q' to quit
 	
-=======
-	You need to have [pygame](https://www.pygame.org/wiki/about "Pygame Wiki") and [Python2](https://www.python.org/downloads/release/python-2714/ "Python 2.7.14") installed to run this game.
-	
-## Usage
-
-	To run the game.
-		'''
-		python2 Snake.py2
-		'''
-
-## Gameplay
-
-	Simple commands using arrowkeys to move around and 'q' to quit
-	
->>>>>>> d580f6ca9561fcc764f7fb2ac28071ebfebd54de
