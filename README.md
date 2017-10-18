@@ -17,8 +17,9 @@
 ## Usage
 
 	To run the game.
-		''' bash
+		'''Shell
 		python2 Snake.py2
+		'''
 
 ## Gameplay
 
