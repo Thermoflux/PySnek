@@ -17,7 +17,7 @@
 ## Usage
 
 	To run the game.
-		'''Shell
+		'''
 		python2 Snake.py2
 		'''
 
