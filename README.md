@@ -17,9 +17,9 @@ You need to have **[pygame](https://www.pygame.org/wiki/about "Pygame Wiki")** a
 ## Usage
 
 To run the game.
-	'''shell
-	python2 Snake.py2
-	'''
+```sh
+python2 Snake.py2
+```
 
 ## Gameplay
 
