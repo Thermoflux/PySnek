@@ -1,5 +1,3 @@
-#!/usr/bin/env python2
-
 """
 Simple Snake game to understand python and pygame better.
 
@@ -73,6 +71,7 @@ class Game(object):
         self.snk_xchange = snk_unitwidth + snk_unitmargin
         self.snk_ychange = 0
         self.newfood = False
+        self.moves = 0
         
         # Create snake
         for i in range(13):
@@ -127,7 +126,7 @@ class Game(object):
                 if event.key == pygame.K_q:
                     self.quit  = True
                 self.newfood = False
-                
+                self.moves= self.moves +1
         if self.quit == True : 
             self.gameover = True
             
@@ -135,7 +134,18 @@ class Game(object):
     
     # Run game logic 
     def runLogic(self):
+        '''Run game logic '''
         
+        def normalize(val,  val_limit):
+            '''Make snek go within the board and not outside, wrap the edges'''
+            if val > val_limit:
+                return 0
+            elif val < 0:
+                return val_limit
+            else:
+                return val
+            
+            
         # See if the player block has collided with anything.
         self.newfood = pygame.sprite.collide_rect(self.snkelements[0], self.foodsegment)
         #print blocks_hit_list    
@@ -167,8 +177,8 @@ class Game(object):
         
         # remove old snake segments
         self.allspritelist.remove(self.snkelements.pop())
-        x = self.snkelements[0].rect.x + self.snk_xchange
-        y = self.snkelements[0].rect.y + self.snk_ychange
+        x = normalize(self.snkelements[0].rect.x + self.snk_xchange, WIN_WIDTH)
+        y = normalize(self.snkelements[0].rect.y + self.snk_ychange, WIN_HEIGHT)
         segment = Segment(x, y, WHITE)
         self.snkelements.insert(0, segment)
         self.snakesprite.add(segment)
@@ -189,9 +199,11 @@ class Game(object):
  
         if not self.gameover:
             msg = "Score   :" + str(self.score)
-            Message.Message(msg, 650, 80, self.screen, WHITE)
+            Message.Message(msg, 650, 80, self.screen, BLUE)
             msg = "Segments:" + str(len(self.snkelements))
-            Message.Message(msg, 650, 100, self.screen, WHITE)
+            Message.Message(msg, 650, 100, self.screen, BLUE)
+            msg = "Moves   :" + str(self.moves)
+            Message.Message(msg, 650, 120, self.screen, BLUE)
             self.allspritelist.draw(self.screen)
  
         pygame.display.flip()
