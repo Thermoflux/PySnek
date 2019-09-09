@@ -24,4 +24,6 @@ python2 Snake.py2
 ## Gameplay
 
 Simple commands using arrowkeys to move around and 'q' to quit
+
+By ThermoFlux
 	
