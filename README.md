@@ -1,5 +1,6 @@
 # PySnek
-	
+### Screenshot
+![](https://i.imgur.com/9XUTjBl.png)
 ## Introduction	
 This is a simple snake game written in python, using pygame module.
 I used this to investigae more about classes, modules and functions in python.
